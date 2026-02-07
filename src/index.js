@@ -6,19 +6,33 @@ const logger = require('./config/logger');
 let server;
 const PORT = process.env.PORT || config.port || 3000;
 
+
 mongoose
   .connect(config.mongoose.url, config.mongoose.options)
-  .then(() => {
+  .then(async (conn) => {
     logger.info('Connected to MongoDB');
+    const db = mongoose.connection.db; 
+    const admin = db.admin();
+    const info = await admin.command({ connectionStatus: 1 });
+    const username = info.authInfo.authenticatedUsers[0]?.user || 'Unknown';
+    const dbName = db.databaseName;
+    const collections = await db.listCollections().toArray();
+
+    logger.info(`MongoDB Username: ${username}`);
+    logger.info(`Database Name: ${dbName}`);
+    logger.info(
+      `Collections: ${collections.map((c) => c.name).join(', ')}`
+    );
 
     server = app.listen(PORT, () => {
-      logger.info(`Server running on port ${PORT}`);
+      logger.info(`Server running on port http://${PORT}`);
     });
   })
   .catch((err) => {
     logger.error('MongoDB connection error:', err);
-    process.exit(1); 
+    process.exit(1);
   });
+
 
 const exitHandler = () => {
   if (server) {
