@@ -6,7 +6,6 @@ const logger = require('./config/logger');
 let server;
 const PORT = process.env.PORT || config.port || 3000;
 
-
 mongoose
   .connect(config.mongoose.url, config.mongoose.options)
   .then(async (conn) => {
