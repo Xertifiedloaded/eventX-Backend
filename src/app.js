@@ -28,7 +28,7 @@ app.use(cors());
 
 app.options('*', cors());
 app.get('/', (req, res) => {
-  res.send('Hello, Welcome to Eco Flow Environment');
+  res.send('Hello, Welcome to eventX Environment');
 });
 app.use(passport.initialize());
 passport.use('jwt', jwtStrategy);
